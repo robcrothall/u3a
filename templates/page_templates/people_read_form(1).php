@@ -1,0 +1,436 @@
+<?php
+/**
+ * People_read_form
+ * 
+ * This stops non-staff from seeing draft policies and staff policies
+ * PHP Version 7.1
+ * 
+ * @category WebPage
+ * @package  Sample
+ * @author   "Rob Crothall" <rob@crothall.co.za>
+ * @license  GPL 1.0 or later
+ * @version  GIT: <git-id>
+ * @link     http://www.sprv.co.za
+ */
+
+$_SESSION["module"] = $_SERVER["PHP_SELF"];
+$people_id = htmlspecialchars(strip_tags($form_id));
+$data = query(
+    "select a.surname, a.first_name, a.other_names, a.given_name, a.title, " . 
+    "a.account_no, " . 
+    "a.sex, " .
+    "a.race_id, " . 
+    "a.checked, a.user_id, a.changed from people a where a.id = ?", 
+    $people_id
+); 
+$_SESSION["selected_people_id"] = $people_id;
+$_SESSION["search_name_start"]  = $data[0]["surname"];
+//$_SESSION["selected_cottage"]   = $data[0]["cottage"];
+$surname        = $data[0]["surname"];
+$first_name     = $data[0]["first_name"];
+$other_names    = $data[0]["other_names"];
+$given_name     = $data[0]["given_name"];
+$title          = $data[0]["title"];
+$account_no     = $data[0]["account_no"];
+$sex            = $data[0]["sex"];
+$race_id        = $data[0]["race_id"];
+$checked        = $data[0]["checked"];
+$user_id        = $data[0]["user_id"];
+$changed        = $data[0]["changed"];
+$full_name      = $surname . ", " . $first_name;
+if (!empty($other_name)) {
+    $full_name .= " " . $other_names;
+}
+if (!empty($given_name)) {
+    $full_name .= " (" . $given_name . ")";
+}
+$sql = "select a.occupation from occupation a, people_occupation b ";
+$sql .= "where a.id = b.occupation_id ";
+$sql .= "and b.people_id = ?";
+$data = query($sql, $people_id); 
+$occupation = "";
+$spacer = "";
+foreach($data as $row) {
+    $occupation = $spacer . $row["occupation"];
+    $spacer = ", ";
+}
+$sql = "select co_name from company a, people_company b ";
+$sql .= "where a.id = b.company_id ";
+$sql .= "and b.people_id = ?";
+$data = query($sql, $people_id);
+$spacer = "";
+$co_name = "";
+foreach($data as $row) {
+    $co_name .= $spacer . $row["co_name"];
+    $spacer = ", ";
+}
+$staff = check_role("STAFF");
+$pr = check_role("PR");
+$sql = "select asset_name, asset_size, billable ";
+$sql .= "from asset a, people_asset b ";
+$sql .= "where a.id = b.asset_id ";
+$sql .= "and b.people_id = ?";
+$data = query($sql, $people_id);
+$spacer = "";
+$asset_name = "";
+if (count($data) > 0) {
+    foreach($data as $row) {
+        $asset_name .= $spacer;
+        if ($staff) {
+            $asset_name .= $row["asset_name"] . " (" . $row["asset_size"];
+            $asset_name .= " square metres";
+            if ($row["billable"]) {
+                $asset_name .= ", billable";
+            }
+            $asset_name .= ")";
+        } else { 
+            $asset_name .= $row["asset_name"];
+        }
+        $spacer = ", "; 
+    }
+}
+$data = query("select * from users where id = ?", $user_id);
+$username = $data[0]["username"];
+$sql = "select surname, first_name, given_name ";
+$sql .= "from people ";
+$sql .= "where id = ?";
+$rows = query($sql, $data[0]["people_id"]);
+$user_full_name = $rows[0]["surname"] . ", " . $rows[0]["first_name"];
+if (strlen($rows[0]["given_name"]) > 0) {
+    $user_full_name .= " (" . $rows[0]["given_name"] . ")";
+}
+?>
+<h2>Read about a Person</h2>
+    <a class="w3-button w3-green" href="../page/people.php">Back</a>&nbsp;
+<?php
+if (check_role("CC")) {
+    echo '<a class="w3-button w3-green" ';
+    echo 'href="../page/medhist.php">Medical History</a>&nbsp;';
+}
+if (check_role("HR")) {
+    echo '<a class="w3-button w3-green" ';
+    echo 'href="../page/popi_data.php">Sensitive Data</a>';
+}
+?>
+   <table class="w3-table-all" width="100%">
+<?php
+if ($staff) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="28%">Record ID:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" w3-padding-small width="70%">' . $people_id . '</td>';
+    echo '</tr>';
+}
+?>
+    <tr>
+    <td align="right" valign="top" width="28%">Person name:</td>
+    <td width="2%"></td>
+    <td align="left" width="70%"><?php echo $full_name; ?></td>
+    </tr>
+    <tr>
+    <td align="right" valign="top" width="28%">Title:</td>
+    <td width="2%"></td>
+    <td align="left" width="70%"><?php echo $title; ?></td>
+    </tr>
+<?php
+if ($staff) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Account number:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $account_no . '</td>';
+    echo '</tr>';
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="30%">Status:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $status . '</td>';
+    //echo '</tr>';
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="30%">Status date:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $status_date . '</td>';
+    //echo '</tr>';
+}
+echo '<tr>';
+echo '<td align="right" valign="top" width="28%">Company:</td>';
+echo '<td width="2%"></td>';
+echo '<td align="left" width="70%">' . $co_name . '</td>';
+echo '</tr>';
+if ($staff) {
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="30%">ID number:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $id_no . '</td>';
+    //echo '</tr>';
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="30%">Driver&#039;s license:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $driver_lic . '</td>';
+    //echo '</tr>';
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="30%">Birth date:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $birth_date . '</td>';
+    //echo '</tr>';
+}
+/*if ($staff | $hp_disclose == 'Y') {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Home phone:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $home_phone . '</td>';
+    echo '</tr>';
+}
+if ($staff | $wp_disclose == 'Y') {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Work phone:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $work_phone . '</td>';
+    echo '</tr>';
+}
+if ($staff | $mp_disclose == 'Y' ) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Mobile phone:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">';
+    echo $mobile_phone;
+    echo '</td>';
+    echo '</tr>';
+}
+if ($staff) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">WhatsApp:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $whatsapp . '</td>';
+    echo '</tr>';
+}
+if ($staff | $he_disclose == 'Y' ) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Home email:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $home_email . '</td>';
+    echo '</tr>';
+}
+if (!empty($work_email)) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Work email:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $work_email . '</td>';
+    echo '</tr>';
+} */
+if ($staff) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Sex:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $sex . '</td>';
+    echo '</tr>';
+}
+if (strlen($asset_name) > 0) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Asset(s):</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $asset_name . '</td>';
+    echo '</tr>';
+}
+/* if ($pr) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Photo permitted:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $photo_disclose . '</td>';
+    echo '</tr>';
+}*/
+if ($staff) {
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Occupation:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $occupation . '</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="30%">Race:</td>';
+    echo '<td width="2%"></td>';
+    $sql = "select race_name from race where id = ?";
+    $rows = query($sql, $race_id);
+    echo '<td align="left" width="70%">' . $rows[0]["race_name"] . '</td>';
+    echo '</tr>';
+    echo "<tr>";
+    echo '<td align="right" valign="top" width="30%">Checked status:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $checked . '</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="25%">Changed by:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $username . ' - ';
+    echo $user_full_name . '</td>';
+    echo '</tr>';
+    echo '<tr>';
+    echo '<td align="right" valign="top" width="25%">Changed on:</td>';
+    echo '<td width="2%"></td>';
+    echo '<td align="left" width="70%">' . $changed . '</td>';
+    echo '</tr>';
+    //echo '<tr>';
+    //echo '<td align="right" valign="top" width="25%">Notes:</td>';
+    //echo '<td width="2%"></td>';
+    //echo '<td align="left" width="70%">' . $notes . '</td>';
+    //echo '</tr>';
+}
+?>
+    </table> 
+<?php
+if ($staff) {
+    echo '<h2>Relationships</h2>';
+    //echo '<a href="../page/people_related_create.php" 
+    //class="w3-button w3-green">Maintain relationships</a>&nbsp;';
+    echo '<a href="../page/people_related.php" ';
+    echo 'class="w3-button w3-green">Maintain relationships</a>&nbsp;' . "\n";
+    echo '<table class="w3-table-all" border="0" cellpadding="0" cellspacing="10" ';
+    echo 'width="100%">' . "\n";
+    echo '<thead>' . "\n";
+    echo '<tr>';
+    echo '<th>Date</th>';
+    echo '<th>Relationship</th>';
+    echo '<th>Person</th>';
+    echo '<th>Notes</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    $rsql  = "SELECT a.id, a.related_id, a.relationship, a.effective_date, r.primary_desc as descr, ";
+    $rsql .= "a.notes, b.surname, b.first_name, b.given_name, 'Primary' as source ";
+    $rsql .= " from people_related a, people b, relationships r ";
+    $rsql .= " where a.people_id = ? and a.related_id = b.id and a.relationship = r.id ";
+    $rsql .= " UNION ";
+    $rsql .= " SELECT c.id, c.people_id, c.relationship, c.effective_date, s.secondary_desc as descr, ";
+    $rsql .= " c.notes, d.surname, d.first_name, d.given_name, ";
+    $rsql .= " 'Secondary' as source "; 
+    $rsql .= " from people_related c, people d, relationships s ";
+    $rsql .= " where c.related_id = ? and c.people_id = d.id and c.relationship = s.id "; 
+    $rsql .= " order by relationship, surname ";
+    $rows = query($rsql, $people_id, $people_id);
+    if (count($rows) > 0) {
+        foreach ($rows as $row) {
+            echo '<tr>';
+            echo '<td valign="top" style="width:100px">';
+            echo $row['effective_date'] . '</td>';
+            echo '<td>' . $row['descr'] . '</td>';
+            $r_url = '<a href="../page/people_read.php?id=';
+            $r_url .= $row['related_id'] . '">' . $row['surname'] . ', ';
+            $r_url .= $row['first_name'] . '</a>';
+            echo '<td valign="top">' . $r_url . '</td>';
+            echo '<td valign="top">' . $row["source"] . ': ' . $row["notes"];
+            echo '</td>';
+            echo '</tr>';
+        }
+    } else {
+        echo "<tr><td></td><td>There are no relationships associated ";
+        echo "with this person.</td>";
+    }
+    echo '</tbody>';
+    echo '</table>';
+    // -----------------------------------------------------------
+    echo '<h2>Memberships</h2>';
+    echo '<a href="../page/memberships_add.php" ';
+    echo 'class="w3-button w3-green">Add Memberships</a>&nbsp;' . "\n";
+    echo '<table class="w3-table-all" border="0" cellpadding="0" cellspacing="10" ';
+    echo 'width="100%">' . "\n";
+    echo '<thead>' . "\n";
+    echo '<tr>';
+    echo '<th>Date joined</th>';
+    echo '<th>Group</th>';
+    echo '<th>Is Leader</th>';
+    echo '<th>Expires</th>';
+    //echo '<th>Status</th>';
+    echo '<th>Action</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    $rsql  = "SELECT a.id, a.join_date, a.expiry_date, a.status, a.is_manager, ";
+    $rsql .= "b.group_name, b.fee_reqd, b.start_month, b.duration_in_months ";
+    $rsql .= " from memberships a, groups b ";
+    $rsql .= " where a.people_id = ? and a.group_id = b.id ";
+    $rsql .= " order by group_name ";
+    $rows = query($rsql, $people_id);
+    if (count($rows) > 0) {
+        foreach ($rows as $row) {
+            if ($row["expiry_date"] < date("Y-m-d")) {
+                $expires =  $row["expiry_date"] . " - expired";
+            } else {
+                $expires = $row["expiry_date"];
+            }
+            if ($row["fee_reqd"] == "N") {
+                $expires = "N/A";
+            }
+            echo '<tr>';
+            echo '<td valign="top" style="width:100px">';
+            echo $row['join_date'] . '</td>';
+            echo '<td>' . $row['group_name'] . '</td>';
+            echo '<td valign="top">' . $row["is_manager"] . '</td>';
+            echo '<td valign="top">' . $expires;
+            echo '</td>';
+            echo '<td valign="top" style="width:280px">';
+            echo '<a class="w3-button w3-green" ';
+            //echo 'href="../page/memberships_read.php?id=' . $row['id'];
+            //echo '">Read</a>' . '&nbsp;';
+            echo '<a class="w3-button w3-green" ';
+            echo 'href="../page/memberships_edit.php?id=' . $row['id'];
+            echo '">Update</a>' . '&nbsp;';
+            if (check_role("ADMIN")) {
+                echo '<a class="w3-button w3-red" ';
+                echo 'href="../page/memberships_delete.php?id=' . $row['id'];
+                echo '">Delete</a>';
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+    } else {
+        echo "<tr><td></td><td>There are no memberships recorded ";
+        echo "for this person.</td>";
+    }
+    echo '</tbody>';
+    echo '</table>';
+    // -----------------------------------------------------------
+    echo '<h2>History</h2>';
+    echo '<a href="../page/history.php" ';
+    echo 'class="w3-button w3-green">Maintain personal history</a>&nbsp;';
+    echo '<table class="w3-table-all" border="0" cellpadding="0" ';
+    echo 'cellspacing="10" width="100%">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Event date</th>';
+    echo '<th>Event description</th>';
+    echo "<th>Action</th>";
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    $sql = "SELECT id, event_date, notes from history ";
+    $sql .= "where people_id = ? order by event_date desc";
+    $rows = query($sql, $people_id);
+    if (count($rows) > 0) {
+        foreach ($rows as $row) {
+            echo '<tr>';
+            echo '<td valign="top" style="width:100px">' . $row['event_date'];
+            echo '</td>';
+            echo '<td valign="top">' . $row['notes'] . '</td>';
+            if (check_role("ADMIN")) {
+                echo '<td valign="top" style="width:280px">';
+                echo '<a class="w3-button w3-green" ';
+                echo 'href="../page/history_read.php?id=' . $row['id'];
+                echo '">Read</a>' . '&nbsp;';
+                echo '<a class="w3-button w3-green" ';
+                echo 'href="../page/history_update.php?id=' . $row['id'];
+                echo '">Update</a>' . '&nbsp;';
+                echo '<a class="w3-button w3-red" ';
+                echo 'href="../page/history_delete.php?id=' . $row['id'];
+                echo '">Delete</a>';
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+    } else {
+        echo "<tr><td></td><td>";
+        echo "There are no events associated with this person.</td>";
+    }
+    echo '</tbody>';
+    echo '</table>';
+}
+?>
+   <div class="form-actions">
+      <a class="w3-button w3-green" href="../page/people.php">Back to people</a>
+   </div>

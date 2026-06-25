@@ -1,0 +1,93 @@
+<?php
+/**
+ * Program: memberships_list
+ * 
+ * List memberships based on criteria.
+ * php version 7.2.10
+ * 
+ * @category WebPage
+ * @package  Sample
+ * @author   "Rob Crothall" <rob@crothall.co.za>
+ * @license  GPL 1.0 or later
+ * @version  GIT: <git_id> 
+ * @link     http://www.sprv.co.za
+ */
+require "../inc/config.php"; 
+$_SESSION["module"] = $_SERVER["PHP_SELF"];
+require "../inc/head.php";
+require "../inc/body.php";
+require "../inc/menu.php";
+require "../inc/msg.php";
+require "../inc/db_open.php";
+echo '<h1>List of Memberships</h1>';
+if (!check_role("STAFF")) {
+    echo "Please ask someone in Administration ";
+    echo "to grant you rights to access membership details.";
+    echo '<a class="w3-button w3-green" href="../page/news_list.php>Return</a>';
+}
+echo '<a href="memberships_add.php" class="w3-button w3-green">Add a Member</a>'; 
+echo "&nbsp";
+?>
+<table class="w3-table-all">
+  <thead>
+    <tr>
+      <th>Member Name</th>
+      <th>Group Name</th>
+      <th>Manager</th>
+      <th>Expiry</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+
+<?php
+$sql = "select a.id, a.people_id, a.is_manager, a.expiry_date, ";
+$sql .= "b.group_name, c.surname, c.first_name, c.given_name ";
+$sql .= "from memberships a, `groups` b, people c ";
+$sql .= "where a.group_id = b.id and a.people_id = c.id ";
+//$sql .= "and a.group_id = 1 ";
+$sql .= "order by c.surname, c.first_name";
+foreach ($handle->query($sql) as $row) {
+    echo "\n<tr>";
+    //echo '  <td>' . $row['group_name'] . '</td>';
+    echo '  <td>' . $row['surname'] . ", " . $row["first_name"];
+    if (!empty($row["given_name"])) {
+        echo " (" . $row["given_name"] . ")";
+    }
+    echo '</td>';
+    echo '<td>' . $row['group_name'] . '</td>';
+    echo '<td>' . $row['is_manager'] . '</td>';
+    echo "<td>" . $row['expiry_date'] . '</td>';
+    
+    if ($row["group_name"] == "Resident") {
+        $year = date("Y");
+        $month = date("m");
+        if ($month > 3) {
+            $year += 1;
+        }
+        echo $year . "-03-31";
+    } else {
+        echo $row["expiry_date"];
+        if ($row["expiry_date"] < date("Y-m-d")) {
+            echo " - Expired";
+        }
+    }
+    echo "</td>";
+    echo '  <td>';
+    echo '<a class="w3-button w3-green" href="../page/memberships_edit.php?id=';
+    echo $row['id'] . '">Update</a>';
+    if (check_role("ADMIN")) {
+        echo '<a class="w3-button w3-red" href="../page/memberships_delete.php?id=';
+        echo $row['id'] . '">Delete</a>';
+    }
+    echo '  </td>';
+    echo '</tr>';
+}
+?>
+  </tbody>
+</table>
+<?php
+//require "../inc/msg.php";
+echo "<p></p>";
+require "../inc/footer.php";
+?>
