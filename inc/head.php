@@ -18,7 +18,8 @@
     integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" 
     crossorigin="anonymous">
 </script>
-   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
+   <link rel="stylesheet" href="../css/w3.css">
+   <link rel="stylesheet" href="../css/bootstrap.min.css">
    <link rel="stylesheet" 
    href="https://fonts.googleapis.com/icon?family=Material+Icons">
    <link rel="stylesheet" 

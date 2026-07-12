@@ -34,7 +34,7 @@
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // validate submission
     if (empty($_POST["username"])) {
-        apologize("You must provide your username.");
+        apologize("You must provide your email address.");
     } else if (empty($_POST["password"])) {
             apologize("You must provide your password.");
     }
@@ -73,87 +73,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $today, $_SESSION["id"]
             );
             // redirect to search
-            redirect("../page/news_list.php");
+            redirect("../page/news_list.php"); 
+        } else {
+            $success = false;
+            login_log($user_name_given, $password_given, $success);
+            apologize("Invalid username and/or password.");
         }
     } else {
-        // check if they are in people table
-        /*$rows = query("SELECT id, account_no, old_account_no, id_no, surname, first_name, 
-            home_phone, mobile_phone, home_email  
-            FROM people where id_no = ?", $password_given
-        );*/
-        $sql = "SELECT id, account_no, surname, first_name, given_name ";
-        $sql .= "FROM people where account_no = ? ";
-        $rows = query($sql, $user_name_given);
-        //var_dump(__LINE__, $rows);
-        if (count($rows) == 1024) { /* This part is not applicable */
-            $row = $rows[0];
-            $people_id = $row["id"];
-            $_SESSION["user_full_name"] = full_name($people_id);
-            $_SESSION["user_first_name"] = $row["first_name"];
-            if (isset($row["given_name"]) && strlen($row["given_name"]) > 1) {
-                $_SESSION["user_first_name"] = $row["given_name"];
-            }
-            $_SESSION["user_surname"] = $row["surname"];
-            $query_pw = my_encrypt($password_given);
-            //var_dump(__LINE__, $query_pw);
-            $pw_sql = "SELECT * FROM sensitive_text WHERE encrypted_text = ? and text_type = 2 ";
-            $pw_sql .= "and people_id in (select people_id from memberships where group_id = 5)";
-            $pw_rows = query($pw_sql, $query_pw);
-            //var_dump(__LINE__, $pw_rows);
-            if (count($pw_rows) == 1) {
-
-            //if (strtoupper($row["account_no"]) == strtoupper($user_name_given)) {
-                $new_pw = crypt($password_given, $user_name_given);
-                $sql = "insert into users (username, hash, surname, first_name, ";
-                $sql .= "people_id, member_exp, last_logon, user_id) ";
-                $sql .= "values (?,?,?,?,?,?,?,?)";
-                $rows = query(
-                    $sql, $row["account_no"], $new_pw, 
-                    $row["surname"], $row["first_name"], 
-                    date("Y-m-d", strtotime("+1 year")), date("Y-m-d"), 1
-                );
-                if ($rows === false) {
-                    apologize("Unable to register your user name - please contact support");
-                }
-                $rows = query("SELECT LAST_INSERT_ID() AS id");
-                $id = $rows[0]["id"];
-                $_SESSION["id"] = $id;
-                $_SESSION["username"] = $row["account_no"];
-                $_SESSION["user_first_name"] = $row["first_name"];
-                $_SESSION["user_surname"] = $row["surname"];
-                //$_SESSION["user_role"] = "RESIDENT";
-                $sql = "select id from roles where role_name = ?";
-                $rows = query($sql, "RESIDENT");
-                $role_id = $rows[0]["id"];
-                $expiry = date("Y-m-d", strtotime("+365 Days"));
-                $sql = "insert into user_roles (user_id, role_id, role_expiry, changed_id) ";
-                $sql .= "values (?, ?, ?, ?)";
-                $rows = query($sql, $id, $role_id, $expiry, $id);
-                // log it
-                $success = true;
-                login_log($user_name_given, $password_given, $success);
-                $today = date("Y-m-d");
-                //$rows = query("update users set last_logon = ? where id = ?", 
-                //    $today, $_SESSION["id"]);
-                // redirect to search
-                redirect("../page/news_list.php");
-            } else {
-                $success = false;
-                //print_r(strtoupper($row["account_no"]));
-                //print_r(strtoupper($user_name_given));
-                login_log($user_name_given, $password_given, $success);
-            }
-        }
+        $success = false;
+        login_log($user_name_given, $password_given, $success);
+        apologize("Invalid username and/or password.");
     }
-    // log it
-//    print_r(strtoupper($row["account_no"]));
-//    print_r(strtoupper($user_name_given));
-    $success = false;
-    login_log($user_name_given, $password_given, $success);
-    // else apologize
-    apologize("Invalid username and/or password.");
 } else {
-    // else render form
-    render("../page/login_form.php", ["title" => "Log In"]);
+    require "../inc/header.php";
+?>
+<form action="login.php" method="post" width="100%">
+    <fieldset>
+        <div class="form-group">
+            <input autofocus class="form-control" name="username" 
+            placeholder="Email address" type="text"/>
+        </div>
+        <div class="form-group">
+            <input class="form-control" name="password" placeholder="Password" 
+            type="password"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="w3-button w3-green">Log in</button>
+        </div>
+    </fieldset>
+</form>
+<h2>Forgot your password?</h2>
+<p>If you have forgotten your password, please send an email to
+    <a href="mailto:webmaster@u3aportalfred.org.za?Subject=U3A%20Website" target="_top">
+        the Webmaster of U3A Port Alfred</a> and request that your password be reset.
+</p>
+<h2>Registering as a member of U3A Port Alfred</h2>
+<p>If you have not yet registered as a member of U3A Port Alfred, please send an email to
+    <a href="mailto:secretary@u3aportalfred.org.za?Subject=U3A%20Website - Membership" target="_top">
+        the Secretary of U3A Port Alfred</a> and attach your completed registration form. Alternatively, you can register as a member by completing the form on the
+    <a href="../page/register.php">Registration</a> page.
+</p>
+<p>People who register on this site are added to the mailing list and will receive notice of meetings and the newsletter.  
+    Once you pay your membership fee, you will be able to access the recorded presentations and attend meetings at the reduced meeting fee.</p>
+<h2>Purpose of this site</h2>
+<p>To register members of U3A Port Alfred and to provide access to recorded presentations to paid-up members.</p>
+<p>
+If any information found on the site is thought to be inaccurate or inappropriate, 
+please send details to
+ <a href="mailto:webmaster@u3aportalfred.org.za?Subject=U3A%20Website" 
+   target="_top">the Webmaster of U3A Port Alfred</a> .
+</p>
+<?php
 }
 ?>

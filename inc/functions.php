@@ -11,7 +11,7 @@ require_once "../inc/constants.php";
 /**
  * user_name
  */
-function full_name($id) {
+function full_name(int $id) {
     $sql = "select surname, first_name, given_name ";
     $sql .= "from people p ";
     $sql .= "where p.id = ? ";
@@ -30,7 +30,7 @@ function full_name($id) {
 /**
  * formatDate
  */
-function formatDate($val) {
+function formatDate(string $val): string {
     $tmp = explode(' ', $val);
     //    var_dump($tmp);
     $arr = explode('-', $tmp[0]);
@@ -39,7 +39,7 @@ function formatDate($val) {
 /**
  * Check Department
  */
-function check_dept($requested) {
+function check_dept(string $requested) {
     $rows = query("select id from groups where group_name = ?", $requested);
     if (count($rows) == 0) {
          return false;
@@ -64,7 +64,8 @@ function check_dept($requested) {
 /**
  * Set up and check Role
  */
-function check_role($requested) {
+function check_role(string $requested): string
+{
     $rows = query("select id from roles where role_name = ?", $requested);
     if (count($rows) == 0) {
         $sql = "insert into roles (role_name) values ('" . $requested . "');";
@@ -77,6 +78,7 @@ function check_role($requested) {
         $my_role_id = 0;    
     }
     $sql = "select * from user_roles where user_id = " . $_SESSION["id"] . " and role_id = " . $my_role_id;
+    $sql .= " and expiry > CURRENT_TIMESTAMP()";
     $rows = query($sql);
     if (count($rows) == 1) {
         return true; 
@@ -87,7 +89,7 @@ function check_role($requested) {
 /**
  * Check and clean up data input
  */
-function test_input($data) 
+function test_input(string $data): string
 {
     if (!empty($data)) {
         $data = trim($data);
@@ -98,7 +100,7 @@ function test_input($data)
     }
     return $data;
 }
-function test_email($email) 
+function test_email(string $email) 
 {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return true;    // the email address is syntactically valid
@@ -106,7 +108,7 @@ function test_email($email)
         return false;    // the email address is invalid
     }
 }
-function test_url($url) 
+function test_url(string $url) 
 {
     if (!preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$url)) {
         return false;    // the URL is not valid
@@ -117,13 +119,14 @@ function test_url($url)
 /**
  * Apologizes to user with message.
  */
-function apologize($message)
+function apologize(string $message)
 {
     render("../page/apology.php", ["message" => $message]);
     exit;
 }
 
-function my_encrypt($simple_string) {
+function my_encrypt(string $simple_string) 
+{
 // Store the cipher method
 $ciphering = CIPHERING;
 
@@ -144,7 +147,8 @@ $encryption = openssl_encrypt($simple_string, $ciphering,
 // Display the encrypted string
 return $encryption;
 }
-function my_decrypt($encryption) {
+
+function my_decrypt(string $encryption): string {
     // Store the cipher method
     $ciphering = CIPHERING;
 
@@ -168,7 +172,7 @@ function my_decrypt($encryption) {
  * Facilitates debugging by dumping contents of variable
  * to browser.
  */
-function dump($variable)
+function dump(mixed $variable)
 {
     include "../page/dump.php";
     //exit;
@@ -177,7 +181,7 @@ function dump($variable)
     /**
      * Validates dates entered
      */
-function validateDate($date, $format = 'Y-m-d')
+function validateDate(string $date, string $format = 'Y-m-d'): bool
 {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) === $date;
@@ -203,7 +207,7 @@ function logout()
      /**
       * extract the actual SQL query submitted.
       */
-function showQuery($query, $params) 
+function showQuery(string $query, array $params) 
 {
     $keys = array();
     $values = array();
@@ -236,7 +240,6 @@ function query(/* $sql [, ... ] */)
 {
     // SQL statement
     $sql = func_get_arg(0);
-    //var_dump("175");
     // parameters, if any
     $parameters = array_slice(func_get_args(), 1);
     // try to connect to database
@@ -294,7 +297,7 @@ function query(/* $sql [, ... ] */)
  * Because this function outputs an HTTP header, it
  * must be called before caller outputs any HTML.
  */
-function redirect($destination)
+function redirect(string $destination)
 {
     // handle URL
     if (preg_match("/^https?:\/\//", $destination)) {
@@ -318,7 +321,7 @@ function redirect($destination)
 /**
  * Renders template, passing in values.
  */
-function render($template, $values = [])
+function render(string $template, array $values = [])
 {
     // if template exists, render it
     //print_r($template);
@@ -338,14 +341,14 @@ function render($template, $values = [])
         trigger_error("Invalid template: $template", E_USER_ERROR);
     }
 }
-function logit($cmd, $module)
+function logit(string $cmd, string $module)
 {
     $mycmd = str_replace("'", "`", $cmd);
     $sql = "insert into sql_log (cmd, module) values ('" . $mycmd . "', '" . $module . "')";
     $result = query("$sql");
     return $result;
 }
-function log_search($values = [])
+function log_search(array $values = [])
 {
       extract($values);
     $cmd1 = "insert into search_log (";
@@ -398,7 +401,7 @@ function log_search($values = [])
     $result = query("$cmd");
     return $result;
 }
-function login_log($user_name_given, $password_given, $success)
+function login_log(string $user_name_given, string $password_given, bool $success)
 {
     $cmd1 = "insert into logon_log (";
     $cmd2 = ") values (";

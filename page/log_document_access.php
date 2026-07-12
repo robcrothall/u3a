@@ -3,7 +3,7 @@
 header('Content-Type: application/json');
 
 // Include database configuration
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../inc/db_open.php';
 
 // Start session to get user_id
 session_start();

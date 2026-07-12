@@ -23,9 +23,9 @@
 } */
 ?>
 <div>
-Copyright &copy; 2019 - <?php echo date("Y") . ": " . COPYRIGHT;?><br>
-Privacy Policy can be found at: 
-<a href="../docs/privacy_policy.html" target="_blank">Privacy Policy</a>
+Copyright &copy; 2025 - <?php echo date("Y") . ": " . COPYRIGHT;?><br>
+<!--Privacy Policy can be found at: 
+<a href="../docs/privacy_policy.html" target="_blank">Privacy Policy</a> -->
 </div>
 
 </div>

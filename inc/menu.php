@@ -1,5 +1,13 @@
-<div class="w3-container">
-  <div class="w3-bar">
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light px-3 mb-3"> -->
+  <div class="container-fluid">
+        <a class="navbar-brand" href="#">University of the Third Age - U3A (w1)</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto">
+        <!--    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#home">Home</a></li> -->
+<!--  <div class="navbar-nav"> -->
 <?php
 /**
  * Program: menu
@@ -12,329 +20,28 @@
  * @author   "Rob Crothall" <rob@crothall.co.za>
  * @license  GPL 1.0 or later
  * @version  GIT: <git_id>
- * @link     http://www.sprv.co.za
+ * @link     http://www.u3aportalfred.org.za
  */
+echo "\t" . '<li class="nav-item"><a class="nav-link active" aria-current="page" href="../index.php">Home</a></li>' . "\n";
+echo '<li class="nav-item"><a class="nav-link" href="#contact">Contact us</a></li>' . "\n";
 if ($_SESSION["id"] !== "0") {
-    echo '<a href="../page/logout.php" class="w3-bar-item w3-button">Log off</a>';
-    echo '<a href="../page/contact.php" class="w3-bar-item w3-button">Contact</a>';
-    echo '<a href="../page/password.php" class="w3-bar-item w3-button">Password</a>';
-    echo '<div class="w3-dropdown-hover">';
-        echo '<button class="w3-button">Documents</button>';
-        echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-        echo '<a href="../page/policies.php" class="w3-bar-item w3-button">';
-        echo 'View Documents</a>';
-    if (check_role("ADMIN")) {
-            echo '<a href="../page/docs_add.php" class="w3-bar-item w3-button">';
-            echo 'Add documents</a>';
-            echo '<a href="../page/docs_edit.php" class="w3-bar-item w3-button">';
-            echo 'Edit document names</a>';
-            echo '<a href="../page/docs_delete.php" class="w3-bar-item w3-button">';
-            echo 'Delete documents</a>';
-    }
-            echo '</div>';
-    echo "</div>\n";
-    echo '<a href="../page/search.php" class="w3-bar-item w3-button">Search</a> ';
-    echo '<div class="w3-dropdown-hover">';
-        echo '<button class="w3-button">Tasks</button>';
-            echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-              echo '<a href="../page/task_create.php" class="w3-bar-item w3-button">';
-              echo 'Create a new task</a> ';
-              echo '<a href="../page/task_list.php" class="w3-bar-item w3-button">';
-              echo 'Show tasks</a> ';
-    if (check_role("COMMITTEE") | check_role("ADMIN")) {
-            echo '<a href="../page/proj_list.php" class="w3-bar-item w3-button">';
-            echo 'Projects</a>';
-              // echo '<a href="../page/task_report.php" ';
-              //echo 'class="w3-bar-item w3-button">Tasks Report</a> ';
-              echo '<hr><a href="../page/tasksrep01.php" ';
-              echo 'class="w3-bar-item w3-button">Tasks created</a>';
-              echo '<a href="../page/tasksrep02.php" ';
-              echo 'class="w3-bar-item w3-button">Tasks closed</a>';
-              echo '<a href="../page/tasksrep03.php" ';
-              echo 'class="w3-bar-item w3-button">Hours worked</a>';
-    }
-            echo '</div>';
-    echo "</div>\n";
+  echo '<li class="nav-item"><a class="nav-link" href="../page/password.php">Password</a></li>' . "\n";
+  echo '<li class="nav-item"><a class="nav-link" href="../page/recordings.php">Recordings</a></li>' . "\n";
+  echo '<li class="nav-item"><a class="nav-link" href="../page/logout.php">Log off</a></li>' . "\n";
+  echo '<li class="nav-item dropdown">' . "\n";
+  echo '<a class="nav-link dropdown-toggle" href="#" id="setupMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Setup</a>' . "\n";
+  echo '<ul class="dropdown-menu" aria-labelledby="setupMenuLink">' . "\n";
+  echo '<li><a class="dropdown-item" href="../page/payments_list.php">View Payments</a></li>' . "\n";
+  echo '<li><a class="dropdown-item" href="../page/payments_add.php">Add Payments</a></li>' . "\n";
+  echo '<li><a class="dropdown-item" href="../page/payments_edit.php">Edit payment details</a></li>' . "\n";
+  echo '<li><a class="dropdown-item" href="../page/payments_delete.php">Delete payments</a></li>' . "\n";
+  echo '</ul>' . "\n";
 } else {
-    echo '<a href="../page/login.php" class="w3-bar-item w3-button">Log in</a> ';
-    echo '<a href="../page/contact.php" class="w3-bar-item w3-button">Contact</a>';
-}
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Administration</button>';
-        echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-        echo '<a href="../page/people.php" class="w3-bar-item w3-button">People</a>';
-        echo '<a href="../page/people_assets.php" class="w3-bar-item w3-button">';
-        echo 'People and Assets</a>';
-        // echo '<a href="../page/history.php" ';
-        // echo 'class="w3-bar-item w3-button">People history</a>';
-        // echo '<a href="../page/people_related.php" ';
-        // echo 'class="w3-bar-item w3-button">People relationships</a>';
-    if (check_role("ADMIN")) {
-        echo '<hr>';
-        echo '<a href="../page/dashboard01.php" ';
-        echo 'class="w3-bar-item w3-button">Dashboard</a>';
-        echo '<a href="../page/password_force.php" ';
-        echo 'class="w3-bar-item w3-button">Password force</a>';
-        echo '<a href="../page/phone_list.php" ';
-        echo 'class="w3-bar-item w3-button">Phone list - Residents</a>';
-        // echo '<a href="../page/register.php" ';
-        // echo 'class="w3-bar-item w3-button">Register</a>';
-        echo '<a href="../page/roles.php" class="w3-bar-item w3-button">Roles</a>';
-        echo '<a href="../page/user_list.php" ';
-        echo 'class="w3-bar-item w3-button">Users</a>';
-        echo '<a href="../page/group_list.php" ';
-        echo 'class="w3-bar-item w3-button">Groups</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Log reporting</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'At The Gate</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Bulk Email Extracts</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Bulk Mail merge</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Policy Reports</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Onboarding and offboarding</a>';
-        echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-        echo 'Skills analysis</a>';
-    
-        //echo '<a href="../page/librarymembers.php" ';
-        //echo 'class="w3-bar-item w3-button">Library Members</a>';
-        // echo '<a href="../page/user_roles.php" ';
-        // echo 'class="w3-bar-item w3-button">User roles</a>';
-        // echo '<a href="../page/history_date_fix.php" ';
-        // echo 'class="w3-bar-item w3-button">History date fix</a>';
-    }
-        echo '</div>';
-    echo "</div>\n";
-}
-if (check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Care Centre</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/medhist.php" class="w3-bar-item w3-button">';
-    echo 'Medical History</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Medical Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Interventions</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Administrative Procedures</a>';
-
-    if (check_role("ADMIN")) {
-        // echo '<a href="../page/int_add.php" class="w3-bar-item w3-button">';
-        // echo 'Interventions</a>';
-        // echo '<hr><a href="../page/med_history_date_fix.php" ';
-        // echo 'class="w3-bar-item w3-button">Medical history date fix</a>';
-    }
-    echo '</div>';
-    echo "</div>\n";
-}
-if (check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Finance</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Levy and Rental Billing</a>';
-    echo '<a href="../page/elec.php" class="w3-bar-item w3-button">';
-    echo 'Electricity billing</a>';
-    echo '<a href="../page/electricity_history3.php" ';
-    echo 'class="w3-bar-item w3-button">Electricity history</a>';
-    echo '<a href="../page/hroom.php" class="w3-bar-item w3-button">';
-    echo 'Hibiscus Room billing</a>';
-    echo '<a href="../page/phone.php" class="w3-bar-item w3-button">';
-    echo 'Phone billing</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Facilities Billing and Ordering</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Care Centre Billing</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Administration Billing</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Billing Responsibility</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Payments via Reception</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Cash withdrawals</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Membership Expiry Updates</a>';
-
-
-    // if(check_role("ADMIN")) {
-    // echo '<hr><a href="../page/med_history_date_fix.php" ';
-    // echo 'class="w3-bar-item w3-button">Medical history date fix</a>';
-    // }
-    echo '</div>';
-    echo "</div>\n";
-}
-if (check_role("COMMITTEE") | check_role("ADMIN"))
-{
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">General</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/birthday.php" class="w3-bar-item w3-button">';
-    echo 'Birthdays</a>';
-    echo '<a href="../page/electricity_history3.php" ';
-    echo 'class="w3-bar-item w3-button">Electricity history</a>';
-    echo '<a href="../page/news_list.php" class="w3-bar-item w3-button">News</a>';
-    echo '<a href="../page/orgchart.php" class="w3-bar-item w3-button">';
-    echo 'Organisation Chart</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Extracts by Group - not yet</a>';
-    echo '<a href="../page/calendar_list.php" class="w3-bar-item w3-button">';
-    echo 'Calendar</a>';
-    if (check_role("COMMITTEE")) {
-        echo '<a href="../page/lib_memberships_list.php" class="w3-bar-item w3-button">';
-        echo 'Library Members</a>';
-    }
-    echo '</div>';
-    echo "</div>\n";
-}
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Board</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/dashboard02_form.php" class="w3-bar-item w3-button">';
-    echo 'Dashboard</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Agendas</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Minutes</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Admin Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Checklists</a>';
-    echo '</div>';
-    echo "</div>\n";
-}    
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Library</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Dashboard</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Admin Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Checklists</a>';
-    echo '</div>';
-    echo "</div>\n";
-}    
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Sales</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Admin Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Checlists</a>';
-    echo '</div>';
-    echo "</div>\n";
-}    
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Facilities</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Admin Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Checklists</a>';
-    echo '</div>';
-    echo "</div>\n";
-}    
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Hibiscus Room</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Admin Procedures</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Checklists</a>';
-    echo '</div>';
-    echo "</div>\n";
-}    
-if (check_role("COMMITTEE") | check_role("ADMIN")) {
-    echo '<div class="w3-dropdown-hover">';
-    echo '<button class="w3-button">Setup</button>';
-    echo '<div class="w3-dropdown-content w3-bar-block w3-card-4">';
-    //echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    //echo 'Account Number ?</a>';
-    echo '<a href="../page/addtyp_list.php" class="w3-bar-item w3-button">';
-    echo 'Address Types</a>';
-    echo '<a href="../page/assphone_list.php" class="w3-bar-item w3-button">';
-    echo 'Asset Phones</a>';
-    echo '<a href="../page/asstyp_list.php" class="w3-bar-item w3-button">';
-    echo 'Asset Types</a>';
-    echo '<a href="../page/asset_list.php" class="w3-bar-item w3-button">';
-    echo 'Assets</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'At The Gate ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Audit Trail ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Billing Responsibility ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Colour ?</a>';
-    echo '<a href="../page/company.php" class="w3-bar-item w3-button">Companies</a>';
-    echo '<a href="../page/country.php" class="w3-bar-item w3-button">Countries</a>';
-    echo '<a href="../page/dept_list.php" class="w3-bar-item w3-button">';
-    echo 'Departments</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Department Membership ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Disciplines ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Distribution Lists ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Documents ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Electricity Records ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Tasks History ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Logon History ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Medical Procedures ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'News ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'News Reports ?</a>';
-    echo '<a href="../page/occupation.php" class="w3-bar-item w3-button">';
-    echo 'Occupations</a>';
-    echo '<a href="../page/parms.php" class="w3-bar-item w3-button">Parameters</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Payments ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Phone Records ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Phone Responsibilities ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Places ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Policy Control ?</a>';
-    echo '<a href="../page/proj_list.php" class="w3-bar-item w3-button">';
-    echo 'Projects</a>';
-    echo '<a href="../page/reg_list.php" class="w3-bar-item w3-button">';
-    echo 'Regions ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Residents & Services ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Skills ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Status ?</a>';
-    echo '<a href="../page/construction_form.php" class="w3-bar-item w3-button">';
-    echo 'Titles ?</a>';
-    echo '<a href="../page/vehicle_make_list.php" class="w3-bar-item w3-button">';
-    echo 'Vehicle Manufacturers</a>';
-    echo '<a href="../page/vehicle_model_list.php" class="w3-bar-item w3-button">';
-    echo 'Vehicle Models</a>';
-    echo '<a href="../page/vehicle_list.php" class="w3-bar-item w3-button">';
-    echo 'Vehicle List</a>';
-    echo '</div>';
-    echo '</div>';
+  echo '<li class="nav-item"><a class="nav-link" href="../page/register.php">Register</a></li>' . "\n";
+  echo '<li class="nav-item"><a class="nav-link" href="../page/payment.php">Payment</a></li>' . "\n";
+  echo '<li class="nav-item"><a class="nav-link" href="../page/login.php">Login</a></li>' . "\n";
+  echo "</ul>\n";
 }
 ?>
+    </div>
   </div>
-</div>

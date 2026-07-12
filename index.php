@@ -1,4 +1,18 @@
-﻿<!doctype html>
+﻿<?php
+/**
+ * Program: index.php
+ * PHP version 7.1
+ * @category WebPage
+ * @package  Sample
+ * @author   "Rob Crothall" <rob@crothall.co.za>
+ * @license  GPL 1.0 or later
+ * @version  GIT: <git_id>
+ * @link     http://www.sprv.co.za
+ */
+// display errors, warnings, and notices
+//include_once "inc/config.php";
+?>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -56,7 +70,7 @@
   </head>
   <body>
     <header class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
+<!--      <div class="container">
         <a class="navbar-brand" href="#">University of the Third Age - U3A (w1)</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -67,13 +81,16 @@
             <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
             <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
             <li class="nav-item"><a class="nav-link" href="#membership">Membership</a></li>
-            <li class="nav-item"><a class="nav-link" href="page/Recordings.php">Recordings</a></li>
+            <li class="nav-item"><a class="nav-link" href="page/recordings.php">Recordings</a></li>
             <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
             <li class="nav-item"><a class="nav-link" href="page/register.php">Register</a></li>
             <li class="nav-item"><a class="nav-link" href="page/login.php">Login</a></li>
           </ul>
         </div>
-      </div>
+      </div> -->
+<?php
+include "inc/menu.php";
+?>      
     </header>
 
     <main class="flex-grow-1">

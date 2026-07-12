@@ -13,12 +13,13 @@
  * @link     http://www.sprv.co.za
  * @PHP      7.1
  */
+static $handle;
 require "../inc/config.php"; 
 $_SESSION["module"] = $_SERVER["PHP_SELF"];
-require "../inc/head.php";
-require "../inc/body.php";
-require "../inc/menu.php";
-require "../inc/msg.php";
+require "../inc/header.php";
+//require "../inc/body.php";
+//require "../inc/menu.php";
+//require "../inc/msg.php";
 require "../inc/db_open.php";
 echo '<h1>List of news items</h1>';
 if ($_SESSION["debug"]) {

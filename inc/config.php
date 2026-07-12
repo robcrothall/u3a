@@ -16,8 +16,11 @@
 // display errors, warnings, and notices
 ini_set("display_errors", true);
 error_reporting(E_ALL);
+static $debug = false;
+static $handle;
 // enable sessions
 session_start();  // Moved to index.php
+$_SESSION["id"] = 1;
 $_SESSION["debug"] = false;
 if ($_SESSION["debug"]) {
     echo "<br>Session in config.php within " . $_SERVER["PHP_SELF"] . "<br>";
