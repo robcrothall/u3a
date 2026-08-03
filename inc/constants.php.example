@@ -1,0 +1,30 @@
+<?php
+    /**
+     * constants.php.example
+     *
+     * Copy this file to inc/constants.php and fill in your local values.
+     */
+
+    define("WEBSITE", "https://example.com");
+    define("HOME_DIR", "w1");
+    define("HOME", WEBSITE . "/" . HOME_DIR);
+
+    define("DATABASE", "your_database_name");
+    define("PASSWORD", "your_database_password");
+    define("SERVER", "localhost");
+    define("USERNAME", "your_database_username");
+
+    define("CLIENT_NAME", "U3A Port Alfred");
+    define("SYSTEM_NAME", "U3A Port Alfred Membership Portal");
+
+    define("HELPDESK_EMAIL", "helpdesk@example.com");
+    define("HELPDESK_CC", "");
+
+    define("COPYRIGHT", "U3A Port Alfred, Horton Road, Port Alfred, South Africa");
+    define("PHYSICAL_ADDR", "Settlers Park Retirement Village, Horton Road, Port Alfred 6170, South Africa");
+    define("POSTAL_ADDR", "Settlers Park Association, Private Bag 6125, Port Alfred 6170, South Africa");
+
+    define("CIPHERING", "AES-128-CTR");
+    define("ENCRYPTION_IV", "1952194720221972");
+    define("ENCRYPTION_KEY", "PropertyMatters");
+?>

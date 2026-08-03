@@ -22,7 +22,7 @@ Build
 Build.bat
 
 # Module::Install
-inc/
+# inc/ is a source directory for this project, so do not ignore it here.
 
 # ExtUtils::MakeMaker
 /blib/
@@ -39,3 +39,14 @@ inc/
 /.carmel/
 # cpanfile.snapshot should generally be ignored for library code, otherwise included
 # cpanfile.snapshot
+
+# Local configuration and sensitive credentials
+/config/database.php
+/inc/constants.php
+
+# Ignore potentially generated or site builder output paths
+/workers/
+/support/
+/subpage/
+/registration/
+/real-estate-single-page-layout/
