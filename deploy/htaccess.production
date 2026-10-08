@@ -1,0 +1,13 @@
+# U3A Port Alfred - production .htaccess (upload to public_html/)
+
+# Do not list folder contents (e.g. /docs/, /img/) when there is no index file
+Options -Indexes
+
+# Use index.php as the home page
+DirectoryIndex index.php index.html
+
+# Optional: force HTTPS. Remove the leading # on the next 3 lines only after
+# confirming https://u3aportalfred.org.za works without browser warnings.
+#RewriteEngine On
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [L,R=301]
